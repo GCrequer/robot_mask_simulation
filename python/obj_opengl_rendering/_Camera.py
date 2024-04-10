@@ -1,9 +1,6 @@
-# Author : Mirado Rajaomarosata
-# Date : 22/09/2023
-
+# Inspiration: Mirado Rajaomarosata
 
 import numpy as np
-from pygame.locals import *
 from OpenGL.GL import *
 
 from _EventHandler import * 
@@ -100,11 +97,6 @@ class Camera(EventHandler):
     def perspective_projection(self, R=np.eye(3), t=np.array([[0.0],[0.0],[0.0]])):
         glMatrixMode(GL_PROJECTION)
         glLoadMatrixf(self.perspective_matrix(R, t).T)
-        glMatrixMode(GL_MODELVIEW)
-    
-    def orthographic_projection(self):
-        glMatrixMode(GL_PROJECTION)
-        glLoadMatrixf(self.orthographic_matrix().T)
         glMatrixMode(GL_MODELVIEW)
 
     

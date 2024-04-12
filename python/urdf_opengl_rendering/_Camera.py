@@ -3,21 +3,23 @@
 import numpy as np
 from OpenGL.GL import *
 
-from _EventHandler import * 
 
-class Camera(EventHandler):
-    def __init__(self, display):
+
+class Camera:
+    def __init__(self, display, EventHandler):
         self.display = display
+        self.EventHandler = EventHandler
 
         # Pose initial
-        self.R = np.eye(3)        
-        self.t = np.array([[-0.5],[-1.5],[-25.]])
+        self.R = np.array([[ 9.82935677e-01,  1.08210394e-03, -1.83946416e-01],[-1.07459820e-03,  9.99999413e-01,  1.40488693e-04],[ 1.83946460e-01,  5.95771386e-05,  9.82936263e-01]])      
+        self.t = np.array([[0.0],[0.0],[-2.]])
+    
+    def handle_events(self):
+        self.R, self.t = self.EventHandler.handle_events()
 
-        self.mouse_down = False
-        self.old_mouse_pos = (0, 0)
 
-    def perspective_matrix(self, R=np.eye(3), t=np.array([[0.0],[0.0],[0.0]])):
-        fov = 45.
+    def perspective_matrix(self, R=np.array([[ 9.82935677e-01,  1.08210394e-03, -1.83946416e-01],[-1.07459820e-03,  9.99999413e-01,  1.40488693e-04],[ 1.83946460e-01,  5.95771386e-05,  9.82]]), t=np.array([[0.0],[0.0],[-2.]])):
+        fov = 90.
         aspect = self.display[0] / float(self.display[1])
         d = 2
         fx = d / (2* np.tan(np.radians(fov) / 2))

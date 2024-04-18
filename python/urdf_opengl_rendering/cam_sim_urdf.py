@@ -6,7 +6,7 @@ from OpenGL.GL import *
 import cv2
 import os
 import numpy as np
-## update of numpy i;plies to redefine some types
+## update of numpy implies to redefine some types
 np.int = np.int32
 np.bool = np.bool_
 
@@ -42,9 +42,28 @@ def update_order(val):
     global window1D, myKernel
     order = 2*int(val/2)+1 #nombre impair supérieur le plus proche de val
     
+    #gaussian kernel
     myKernel = np.zeros((order, order))
     myKernel[order//2, order//2] = 1
     myKernel = cv2.GaussianBlur(myKernel, (order, order), 0)
+
+    #Hamming window
+    #myKernel = np.hamming(order)[:, np.newaxis] * np.hamming(order)[np.newaxis, :]
+
+    #kaiser window
+    #myKernel = np.kaiser(order, 14)[:, np.newaxis] * np.kaiser(order, 14)[np.newaxis, :]
+
+    #hanning window
+    #myKernel = np.hanning(order)[:, np.newaxis] * np.hanning(order)[np.newaxis, :]
+
+    #blackman window
+    #myKernel = np.blackman(order)[:, np.newaxis] * np.blackman(order)[np.newaxis, :]
+
+    #mean filter
+    #myKernel = np.ones((order, order)) / (order**2)
+
+    #median filter
+    #myKernel = np.ones((order, order))
 
 cv2.namedWindow('processed image')
 cv2.createTrackbar('Order', 'processed image', order, 100, update_order)
@@ -60,6 +79,13 @@ while True:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     
     bot.render()
+
+    #for i in range(bot.nb_parts):
+        #glPushMatrix()
+        #glMultMatrixf(bot.pose(i).T)  # Apply the pose transformation
+        #bot.render_part(i)  # Draw the i-th part
+        #glPopMatrix()
+        
     camera.perspective_projection()
     
 

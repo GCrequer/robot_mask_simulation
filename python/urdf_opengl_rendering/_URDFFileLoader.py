@@ -24,7 +24,7 @@ class myURDF:
         self.faces = [list(self.bot.collision_trimesh_fk().keys())[i].faces for i in range(self.nb_parts)]
         self.vertices = [list(self.bot.collision_trimesh_fk().keys())[i].vertices for i in range(self.nb_parts)]
 
-
+        self.meshes = [[] for _ in range(self.nb_parts)]
 
     def face(self, i):
         return list(self.bot.collision_trimesh_fk().keys())[i].faces
@@ -35,6 +35,27 @@ class myURDF:
     def pose(self, i):
         return list(self.bot.collision_trimesh_fk().values())[i]
 
+
+    def process_part(self, i):
+        print(f"{i+1}/{self.nb_parts}: {len(self.faces[i])} faces")
+
+        for face in self.faces[i]:
+            glBegin(GL_POLYGON)
+            glColor([0., 0. , 0.])
+            for v_ind in face:
+                vec = np.array([[self.vertices[i][v_ind][0], self.vertices[i][v_ind][1], self.vertices[i][v_ind][2], 1]]).T
+                self.meshes[i].append(vec)
+            glEnd()
+
+    #def generate(self):
+    #    self.gl_list = glGenLists(1)
+    #    glNewList(self.gl_list, GL_COMPILE)
+    #    glFrontFace(GL_CCW)
+
+    #    for i in range(self.nb_parts):
+    #        self.process_part(i)
+
+    #    glEndList()
 
     def process_part(self, i):
         print(f"{i+1}/{self.nb_parts}: {len(self.faces[i])} faces")
@@ -64,8 +85,23 @@ class myURDF:
         #    t.join()
 
         glEndList()
+    
+    def render_part(self, i):
+        glColor([0., 0. , 0.])
+        
+        for face in self.faces[i]:
+            glBegin(GL_POLYGON)
+            for v_ind in face:
+                vec = self.meshes[i][v_ind]
+                glVertex3fv(vec.flatten()[:3])
+            glEnd()
+
 
     def render(self):
+        # Apply the pose transformation during rendering
+        for i in range(self.nb_parts):
+            for vec in self.meshes[i]:
+                glVertex3fv((self.pose(i) @ vec).flatten()[:3])
         glCallList(self.gl_list)
 
     def free(self):

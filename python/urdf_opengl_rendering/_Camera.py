@@ -6,16 +6,12 @@ from OpenGL.GL import *
 
 
 class Camera:
-    def __init__(self, display, EventHandler):
+    def __init__(self, display):
         self.display = display
-        self.EventHandler = EventHandler
 
         # Pose initial
         self.R = np.array([[ 9.82935677e-01,  1.08210394e-03, -1.83946416e-01],[-1.07459820e-03,  9.99999413e-01,  1.40488693e-04],[ 1.83946460e-01,  5.95771386e-05,  9.82936263e-01]])      
         self.t = np.array([[0.0],[0.0],[-2.]])
-    
-    def handle_events(self):
-        self.R, self.t = self.EventHandler.handle_events()
 
 
     def perspective_matrix(self, R=np.array([[ 9.82935677e-01,  1.08210394e-03, -1.83946416e-01],[-1.07459820e-03,  9.99999413e-01,  1.40488693e-04],[ 1.83946460e-01,  5.95771386e-05,  9.82]]), t=np.array([[0.0],[0.0],[-2.]])):

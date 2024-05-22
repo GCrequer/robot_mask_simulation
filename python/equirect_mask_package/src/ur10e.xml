@@ -1,5 +1,5 @@
 <mujoco model="ur10e">
-  <compiler angle="radian" meshdir="assets" autolimits="true"/>
+  <compiler angle="radian" meshdir="../assets" autolimits="true"/>
   <option gravity="0 0 0"/>
 
   <default>

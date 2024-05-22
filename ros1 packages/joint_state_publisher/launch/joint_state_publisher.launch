@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="joint_state_publisher" type="joint_state_publisher.py" name="joint_state_publisher" output="screen"/>
+</launch>
+

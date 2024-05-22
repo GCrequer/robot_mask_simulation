@@ -1,0 +1,4 @@
+<launch>
+  <node pkg="equirect_mask_package" type="equirect_mask_node.py" name="equirect_mask_node" output="screen"/>
+</launch>
+

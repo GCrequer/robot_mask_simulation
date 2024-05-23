@@ -15,7 +15,7 @@ import rospkg
 
 rospack = rospkg.RosPack()
 package_path = rospack.get_path('equirect_mask_package')
-scene_file = package_path + '/config/scene.xml'
+scene_file = package_path + '/config/scene2.xml'
 
 robot = MyRobot(scene_file)
 glfw.init()
@@ -43,13 +43,12 @@ def main():
 
         robot.update_capture()
 
-        negx_gpu = cp.asarray(np.flipud(robot.frames[2]))
-        posx_gpu = cp.asarray(np.fliplr(robot.frames[1]))
-        negz_gpu = cp.asarray(np.fliplr(robot.frames[5]))
-        posz_gpu = cp.asarray(np.fliplr(robot.frames[0]))
-        posy_gpu = cp.asarray(np.fliplr(np.rot90(robot.frames[4], -1)))
-        negy_gpu = cp.asarray(np.rot90(np.flipud(robot.frames[3]), 1))
-
+        posx_gpu = cp.asarray(np.flipud(robot.frames[2]))
+        negx_gpu = cp.asarray(np.fliplr(robot.frames[1]))
+        negz_gpu = cp.asarray(np.flipud(robot.frames[5]))
+        posz_gpu = cp.asarray(np.flipud(robot.frames[0]))
+        negy_gpu = cp.asarray(np.fliplr(np.rot90(robot.frames[4], -1)))
+        posy_gpu = cp.asarray(np.rot90(np.flipud(robot.frames[3]), 1))
 
         equi = cube2equi_cuda(posy_gpu, negx_gpu, posx_gpu, negz_gpu, negy_gpu, posz_gpu, dst_gpu, dims)
         gray_image = cv2.cvtColor(equi, cv2.COLOR_RGB2GRAY)

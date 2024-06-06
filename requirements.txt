@@ -1,0 +1,5 @@
+numpy
+opencv-python #for BGR2GRAY transform only
+cupy-cuda12x
+mujoco
+glfw

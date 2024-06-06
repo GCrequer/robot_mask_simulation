@@ -1,4 +1,0 @@
-PyOpengl
-opencv-python
-numpy
-urchin

@@ -41,12 +41,12 @@ def main():
 
         robot.update_capture()
 
-        top_gpu = cp.asarray(np.flipud(robot.cams[2]["frame"]))
-        bottom_gpu = cp.asarray(np.fliplr(robot.cams[1]["frame"]))
-        back_gpu = cp.asarray(np.flipud(robot.cams[5]["frame"]))
-        front_gpu = cp.asarray(np.flipud(robot.cams[0]["frame"]))
-        left_gpu = cp.asarray(np.fliplr(np.rot90(robot.cams[4]["frame"], -1)))
-        right_gpu = cp.asarray(np.rot90(np.flipud(robot.cams[3]["frame"]), 1))
+        front_gpu = cp.asarray(np.flipud(robot.cams[2]["frame"]))
+        back_gpu = cp.asarray(np.fliplr(robot.cams[1]["frame"]))
+        top_gpu = cp.asarray(np.flipud(robot.cams[0]["frame"]))
+        bottom_gpu = cp.asarray(np.flipud(robot.cams[5]["frame"]))        
+        left_gpu = cp.asarray(np.rot90(np.flipud(robot.cams[3]["frame"]),1))
+        right_gpu = cp.asarray(np.fliplr(np.rot90(robot.cams[4]["frame"],-1)))
 
         equi = cube2equi_cuda(front_gpu, back_gpu, top_gpu, bottom_gpu, left_gpu, right_gpu, dst_gpu, dims)
         gray_image = cv2.cvtColor(equi, cv2.COLOR_RGB2GRAY)

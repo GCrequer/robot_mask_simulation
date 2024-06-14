@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="kodak_publisher" type="kodak_publisher.py" name="kodak_publisher" output="screen"/>
+</launch>
+

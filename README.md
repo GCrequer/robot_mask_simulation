@@ -33,7 +33,9 @@ L'arborescence du projet est la suivante:
  ┃ ┗ 🐍 Tiles2EquiCU.py
  ┃
  ┣ 📂 utils
- ┃ ┣ 📂 ros1_joint_state_minimal_publisher_package
+ ┃ ┣ 📂 ros1_workspace
+ ┃ ┃ ┣ 📂 config
+ ┃ ┃ ┗ 📂 src
  ┃ ┗ 🐍 cubemap_vizualisation.py
  ┃
  ┗ 📜 requirements.txt
@@ -43,7 +45,7 @@ L'arborescence du projet est la suivante:
 
 -   `lib/` contient la classe `MyRobot` qui permet de charger un robot dans MuJoCo et de recuperer les images des cameras. `Tiles2EquiCU.py` contient les fonctions permettant de transformer les 6 images en une image equirectangulaire.
 
--   `utils/` contient differents scripts pour le debuggage, la disposition des images en cubemap, et plus tard peut-etre des scripts de calibration.
+-   `utils/` contient differents scripts pour le debuggage, la disposition des images en cubemap, et un environnement catkin pour la calibration et la realisation d'un masque dynamique.
 
 ### Note sur les assets
 `scene_color.xml` est une scene complete avec un ur5, un mug, un sol, un drapeau breton en texture, et un eclairage. Elle est principalement utilisee pour identifier les correspondances entre cameras et faces de la cubemap. Ca peut etre remplace par n'importe quelle scene, tant qu'elle contient un robot et un ou plusieurs objets visibles par les cameras.

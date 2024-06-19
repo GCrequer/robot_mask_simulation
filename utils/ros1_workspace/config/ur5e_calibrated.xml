@@ -1,5 +1,5 @@
 <mujoco model="ur5e">
-  <compiler angle="radian" meshdir="assets_ur5" autolimits="true" />
+  <compiler angle="radian" meshdir="assets_ur5" autolimits="true" eulerseq="xyz" />
 
   <option integrator="implicitfast" />
 
@@ -32,6 +32,7 @@
 
   <asset>
     <material class="ur5e" name="black" rgba="0. 0. 0. 1" />
+    <material class="ur5e" name="red" rgba="1. 0. 0. 0.5" />
     <material class="ur5e" name="invisible" rgba="0. 0. 0. 0." />
 
     <mesh file="base_0.obj" />
@@ -109,16 +110,9 @@
                   <geom material="black" mesh="wrist3" class="visual" />
                   <geom class="eef_collision" pos="0 0.08 0" quat="1 1 0 0" size="0.04 0.02" />
                   <site name="attachment_site" pos="0 0.1 0" quat="-1 1 0 0" />
-                <body name="camera_block" pos="0 0 0">
+                <body name="camera_block" pos="0.0 0.16 0.0" euler="0.05 0.22 0.05">
         <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001" />
-        <joint name="slide_x" type="slide" axis="1 0 0" />
-        <joint name="slide_y" type="slide" axis="0 1 0" />
-        <joint name="slide_z" type="slide" axis="0 0 1" />
-        <joint name="hinge_prec" type="hinge" axis="0 0 1" />
-        <joint name="hinge_nut" type="hinge" axis="1 0 0" />
-        <joint name="hinge_int" type="hinge" axis="0 0 1" />
         <geom type="box" size="0.1 0.1 0.1" material="invisible" class="visual" />
-
         <camera name="front" pos="0 0 0" quat="1 0 1 0" fovy="90" />
         <camera name="back" pos="0 0 0" quat="1 0 -1 0" fovy="90" />
         <camera name="top" pos="0 0 0" quat="1 1 0 0" fovy="90" />
@@ -142,9 +136,9 @@
     <general class="size1" name="wrist_1" joint="wrist_1_joint" />
     <general class="size1" name="wrist_2" joint="wrist_2_joint" />
     <general class="size1" name="wrist_3" joint="wrist_3_joint" />
-  <general class="size1" name="slide_x" joint="slide_x" /><general class="size1" name="slide_y" joint="slide_y" /><general class="size1" name="slide_z" joint="slide_z" /><general class="size1" name="hinge_prec" joint="hinge_prec" /><general class="size1" name="hinge_nut" joint="hinge_nut" /><general class="size1" name="hinge_int" joint="hinge_int" /></actuator>
+  </actuator>
 
   <keyframe>
-    <key name="home" qpos="-1.5708 -1.5708 1.5708 -1.5708 -1.5708 0 0 0 0 0 0 0" ctrl="-1.5708 -1.5708 1.5708 -1.5708 -1.5708 0 0 0 0 0 0 0" />
+    <key name="home" qpos="-1.5708 -1.5708 1.5708 -1.5708 -1.5708 0" ctrl="-1.5708 -1.5708 1.5708 -1.5708 -1.5708 0" />
   </keyframe>
 </mujoco>

@@ -21,7 +21,7 @@ class JointStatePublisher:
             slider.pack()
             self.sliders.append(slider)
 
-        self.publisher = rospy.Publisher('/robot/joint_states', JointState, queue_size=10)
+        self.publisher = rospy.Publisher('/joint_states', JointState, queue_size=10)
         rospy.init_node('joint_state_publisher', anonymous=True)
         self.rate = rospy.Rate(10)  # 10 Hz
 

@@ -10,10 +10,10 @@ def create_calibration_robot_file(name):
         <joint name="slide_x" type="slide" axis="1 0 0"/>
         <joint name="slide_y" type="slide" axis="0 1 0"/>
         <joint name="slide_z" type="slide" axis="0 0 1"/>
-        <joint name="hinge_prec" type="hinge" axis="0 0 1"/>
-        <joint name="hinge_nut" type="hinge" axis="1 0 0"/>
-        <joint name="hinge_int" type="hinge" axis="0 0 1"/>
-        <geom type="box" size="0.1 0.1 0.1" material="invisible" class="visual"/>
+        <joint name="roll" type="hinge" axis="1 0 0"/>
+        <joint name="pitch" type="hinge" axis="0 1 0"/>
+        <joint name="yaw" type="hinge" axis="0 0 1"/>
+        <geom type="box" size="0.05 0.05 0.05" material="red" class="visual"/>
 
         <camera name="front" pos="0 0 0" quat="1 0 1 0" fovy="90"/>
         <camera name="back" pos="0 0 0" quat="1 0 -1 0" fovy="90"/>
@@ -34,16 +34,16 @@ def create_calibration_robot_file(name):
     root.find(".//actuator").append(actuator)
     actuator = ET.Element("general", {"class": "size1", "name": "slide_z", "joint": "slide_z"})
     root.find(".//actuator").append(actuator)
-    actuator = ET.Element("general", {"class": "size1", "name": "hinge_prec", "joint": "hinge_prec"}) 
+    actuator = ET.Element("general", {"class": "size1", "name": "roll", "joint": "roll"}) 
     root.find(".//actuator").append(actuator)
-    actuator = ET.Element("general", {"class": "size1", "name": "hinge_nut", "joint": "hinge_nut"})
+    actuator = ET.Element("general", {"class": "size1", "name": "pitch", "joint": "pitch"})
     root.find(".//actuator").append(actuator)
-    actuator = ET.Element("general", {"class": "size1", "name": "hinge_int", "joint": "hinge_int"})
+    actuator = ET.Element("general", {"class": "size1", "name": "yaw", "joint": "yaw"})
     root.find(".//actuator").append(actuator)
 
     for key in root.findall(".//keyframe/key"):
-        key.set("qpos", key.get("qpos") + " 0 0 0 0 0 0")
         key.set("ctrl", key.get("ctrl") + " 0 0 0 0 0 0")
+        key.set("qpos", key.get("qpos") + " 0 0 0 0 0 0")
 
     robot_name = name.split(".")[0] + "_calibration.xml"
     tree.write(robot_name)
@@ -54,7 +54,7 @@ def create_calibrated_robot_file(name, pos, euler):
     root = tree.getroot()
 
     camera_block_static = f"""
-    <body name="camera_block" pos="{pos[0]} {pos[1]} {pos[2]}" euler="{-euler[0]} {euler[1]} {euler[2]}" >
+    <body name="camera_block" pos="{pos[0]} {pos[1]} {pos[2]}" euler="{euler[0]} {euler[1]} {euler[2]}" >
         <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001" />
         <geom type="box" size="0.1 0.1 0.1" material="invisible" class="visual"/>
         <camera name="front" pos="0 0 0" quat="1 0 1 0" fovy="90"/>

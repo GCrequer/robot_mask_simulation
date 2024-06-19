@@ -1,5 +1,5 @@
 <mujoco model="ur5e">
-  <compiler angle="radian" meshdir="assets_ur5" autolimits="true"/>
+  <compiler angle="radian" meshdir="assets_ur5" autolimits="true" eulerseq="xyz"/>
 
   <option integrator="implicitfast"/>
 
@@ -33,6 +33,7 @@
 
   <asset>
     <material class="ur5e" name="black" rgba="0. 0. 0. 1"/>
+    <material class="ur5e" name="red" rgba="1. 0. 0. 0.5"/>
     <material class="ur5e" name="invisible" rgba="0. 0. 0. 0."/>
 
     <mesh file="base_0.obj"/>

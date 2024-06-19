@@ -8,54 +8,58 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import Image, JointState
 import rospy
 import cv2
+import tkinter as tk
 
 import threading
 
 
-config_path = os.path.dirname(os.path.abspath(__file__)).split('src')[0] + '/config/'
+config_path = os.path.dirname(os.path.abspath(__file__)).split('src')[0] + 'config/'
 
 robot_calib_name = create_calibration_robot_file(config_path + "ur5e.xml")
 scene_calib_name = create_scene_file(config_path + "scene.xml", robot_calib_name)
 
-
+img = np.zeros((1024,2048,3),np.uint8)
 dims = 512
 robot = MyRobot(scene_calib_name, size=(dims, dims))
+robot.init_outview()
 robot.init_capture()
 
-robot_lock = threading.Lock()
-def opencv_ui():
-    cv2.namedWindow('camera_pose')
-    # position
-    for i in range(6, 9):
-        cv2.createTrackbar('Joint'+str(i),'camera_pose',int((robot.data.ctrl[i]+1)*255/2),255,lambda value, i=i: update_joint(i, (value*2/255)-1))
-    # rotation
-    for i in range(9, 12):
-        cv2.createTrackbar('Joint'+str(i),'camera_pose',int((robot.data.ctrl[i]+np.pi)*255/(2*np.pi)),255,lambda value, i=i: update_joint(i, (value*2*np.pi/255)-np.pi))
-
-    while True:
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    cv2.destroyAllWindows()
-
 def update_joint(joint_index, value):
-    with robot_lock:
-        robot.data.ctrl[joint_index] = value
-        robot.data.joint(joint_index).qpos = value
+    robot.data.ctrl[joint_index] = value
+    robot.data.joint(joint_index).qpos = value
 
-# Create a separate thread for the OpenCV UI
-opencv_thread = threading.Thread(target=opencv_ui)
-opencv_thread.start()
+def create_slider(frame, label, min_val, max_val, init_val, joint_index):
+    tk.Label(frame, text=label).pack()
+    slider = tk.Scale(frame, from_=min_val, to=max_val, orient=tk.HORIZONTAL, resolution=0.01, length=400)
+    slider.set(init_val)
+    slider.pack()
+    slider.bind("<Motion>", lambda event: update_joint(joint_index, slider.get()))
+    return slider
+
+def tk_ui():
+    root = tk.Tk()
+    root.title("Camera Pose Sliders")
+    frame = tk.Frame(root)
+    frame.pack()
+    for i in range(6, 9):
+        create_slider(frame, f'Slider {i}', -0.3, 0.3, 0, i)
+    for i in range(9, 12):
+        create_slider(frame, f'Hinge {i}', -np.pi, np.pi, 0, i)
+    root.mainloop()
+
+# Start Tkinter UI in a separate thread
+tk_thread = threading.Thread(target=tk_ui)
+tk_thread.start()
+
 
 front_gpu, back_gpu, top_gpu, bottom_gpu, left_gpu, right_gpu, dst_gpu = allocate_gpu_memory(dims)
 bridge = CvBridge()
 
 def ros_callback_joint(data):
-    l = data.position
-    with robot_lock:
-        for i in range(len(l)):
-            robot.data.ctrl[i] = l[i]
-            robot.data.joint(i).qpos = l[i]
+    l = [data.position[i] for i in [2,1,0,3,4,5]]
+    for i in range(len(l)):
+        robot.data.ctrl[i] = l[i]
+        robot.data.joint(i).qpos = l[i]
 
 def ros_callback_image(data):
     global img
@@ -63,7 +67,7 @@ def ros_callback_image(data):
 
 def main():
     rospy.init_node('camera_superposition', anonymous=True)
-    rospy.Subscriber('/robot/joint_states', JointState, ros_callback_joint)
+    rospy.Subscriber('/joint_states', JointState, ros_callback_joint)
     rospy.Subscriber('/kodak/image_equi', Image, ros_callback_image)
     image_pub = rospy.Publisher('/robot_shape', Image, queue_size=10)
     rate = rospy.Rate(10)
@@ -71,6 +75,7 @@ def main():
     while not rospy.is_shutdown():
         mujoco.mj_step(robot.model, robot.data)
 
+        robot.update_outview()
         robot.update_capture()
 
         front_gpu = cp.asarray(np.flipud(robot.cams[0]["frame"]))
@@ -92,8 +97,10 @@ def main():
         image_msg = bridge.cv2_to_imgmsg(img, encoding="bgr8")
         image_pub.publish(image_msg)
         rate.sleep()
+        glfw.poll_events()
     
     pos = robot.data.ctrl[6:9]
+
     euler = robot.data.ctrl[9:12]
 
     robot_calibrated_name = create_calibrated_robot_file(config_path + "ur5e.xml", pos, euler)

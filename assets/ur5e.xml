@@ -33,6 +33,7 @@
 
   <asset>
     <material class="ur5e" name="black" rgba="0. 0. 0. 1"/>
+    <material class="ur5e" name="invisible" rgba="0. 0. 0. 0."/>
 
     <mesh file="base_0.obj"/>
     <mesh file="base_1.obj"/>
